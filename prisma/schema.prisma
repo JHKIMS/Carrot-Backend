@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 
 generator client {
   provider = "prisma-client-js"
@@ -8,6 +7,8 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
+  // 한 객체가 다른 객체에 연결된 상태를 생성하려고 할때, 그 연결을 받는 객체가 존재한다는 것을 보장해야 한다.
+  relationMode="prisma" 
 }
 
 model User{
