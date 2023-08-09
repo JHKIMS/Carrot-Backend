@@ -2,32 +2,21 @@ import { NextApiRequest, NextApiResponse } from "next";
 import withHandler from "../../../libs/server/withHandler";
 import client from "../../../libs/server/client";
 
+type phoneNumber=number;
 async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { phone, email } = req.body;
-  let user;
-  if(phone){
-    user = await client.user.upsert({
+  const payload = phone ? {phone:+phone} : {email} ;
+  const user = await client.user.upsert({
       where:{
-        phone: +phone,
+        ...payload,
       },
       create:{
         name: "Tester-2",
-        phone: +phone,
+        ...payload,
       },
       update:{},
-    })
-  }else if(email){
-    user = await client.user.upsert({
-      where:{
-        email: email,
-      },
-      create:{
-        name: "Tester-2",
-        email: email,
-      },
-      update:{},
-    })
-  }
+    });
+
 
   return res.status(200).end();
 }
