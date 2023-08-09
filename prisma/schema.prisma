@@ -18,16 +18,16 @@ model User {
   email     String?  @unique
   avatar    String?
 
-  tokens Token[]
+  Token Token[]
 }
 
 model Token {
   id        Int      @id @default(autoincrement())
-  payload   String   @unique
+  uniqueKey String   @unique
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  userId    Int
+  userId Int
   @@index([userId])
 }

@@ -1,29 +1,36 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import withHandler from "../../../libs/server/withHandler";
+import withHandler, { ResponseType } from "../../../libs/server/withHandler";
 import client from "../../../libs/server/client";
 
-type phoneNumber = number;
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+
+async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseType>
+) {
   const { phone, email } = req.body;
-  const payload = phone ? { phone: +phone } : { email };
+  const uniqueKey = Math.floor(100000 + Math.random() * 900000) + "";
+  const user = phone ? { phone: +phone } : email ? { email }:null;
+  if(!user) return res.status(400).json({ok:false});
   const token = await client.token.create({
     data: {
-      payload: "0095123",
+      uniqueKey: uniqueKey,
       user: {
         connectOrCreate: {
           where: {
-            ...payload,
+            ...user,
           },
           create: {
             name: "Tester-Token",
-            ...payload,
+            ...user,
           },
         },
       },
     },
   });
   console.log(token);
-  return res.status(200).end();
+  return res.json({
+    ok: true,
+  });
 }
 
 export default withHandler("POST", handler);
