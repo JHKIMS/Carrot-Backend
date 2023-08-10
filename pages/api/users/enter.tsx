@@ -33,23 +33,23 @@ async function handler(
     },
   });
   if (phone) {
-    const message = await twilioClient.messages.create({
+/*     const message = await twilioClient.messages.create({
       messagingServiceSid: process.env.TWILIO_SERVICE,
       to: process.env.MY_PHONE!,
       body: `Your login token is ${uniqueKey}`,
     });
-    console.log(message);
+    console.log(message); */
   }else if(email){
-    const email = await mail.send({
+/*     const email = await mail.send({
       from:"maf12@naver.com",
       to:"wjdgns5131@gmail.com",
       subject: "SideProject Vertification Email",
       text:`Your token ${uniqueKey}`,
       html: `<strong>Your Token is ${uniqueKey}</strong>`,
     });
-    console.log(email);
+    console.log(email); */
   }
-  console.log(token);
+  // console.log(token);
   return res.json({
     ok: true,
   });

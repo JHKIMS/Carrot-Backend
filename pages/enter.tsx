@@ -12,7 +12,7 @@ interface EnterForm {
 }
 
 const Enter: NextPage = () => {
-  const [enter, {loading, data, error}] = useMutation("/api/users/enter");
+  const [enter, { loading, data, error }] = useMutation("/api/users/enter");
   const [submitting, setSubmitting] = useState(false);
   const { register, reset, handleSubmit } = useForm<EnterForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
@@ -27,7 +27,8 @@ const Enter: NextPage = () => {
   const onValid = (validForm: EnterForm) => {
     enter(validForm);
   };
-  console.log(loading, data, error);
+  console.log("Check::enter.tsx");
+  console.log(data);
   return (
     <div className="mt-16 px-4">
       <h3 className="text-3xl font-bold text-center">Enter to Carrot</h3>
