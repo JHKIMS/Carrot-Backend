@@ -4,15 +4,16 @@ interface EnterForm {
   email?: string;
   phone?: string;
 }
-
-
-export default function useMutation(
+interface UseMutationState<T> {
+  loading: boolean;
+  data?: T;
+  error?: object;
+}
+type UseMutationResult<T> = [(data: EnterForm) => void, UseMutationState<T>];
+export default function useMutation<T = any>(
   url: string
-): [
-  (data?: EnterForm) => void,
-  { loading: boolean; data: undefined | any; error: undefined | any }
-] {
-  const [state, setState] = useState({
+): UseMutationResult<T> {
+  const [state, setState] = useState<UseMutationState<T>>({
     loading: false,
     data: undefined,
     error: undefined,
@@ -33,4 +34,3 @@ export default function useMutation(
   }
   return [mutation, { ...state }];
 }
-
