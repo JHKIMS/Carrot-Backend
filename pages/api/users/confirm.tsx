@@ -9,6 +9,14 @@ mail.setApiKey(process.env.SENDGRID_APIKEY!);
 
 const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
+declare module "iron-session"{
+  interface IronSessionData{
+    user?: {
+      id:number;
+    }
+  }
+}
+
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
@@ -23,10 +31,10 @@ async function handler(
   console.log(req.session);
   console.log("Confrim파일_Token");
   console.log(token);
-  if(!exists) res.status(404).end();
+  if(!exists) return res.status(404).end();
   console.log(exists);
   req.session.user = {
-    id: exists?.userId
+    id: exists.userId
   }
   await req.session.save();
   res.status(200).end();
