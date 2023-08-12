@@ -1,29 +1,21 @@
-import {withIronSessionApiRoute} from "iron-session/next";
 import { NextApiRequest, NextApiResponse } from "next";
 import withHandler, { ResponseType } from "../../../libs/server/withHandler";
 import client from "../../../libs/server/client";
-import twilio from "twilio"; 
+import twilio from "twilio";
 import mail from "@sendgrid/mail";
+import { withApiSession } from "../../../libs/server/withSession";
 
 mail.setApiKey(process.env.SENDGRID_APIKEY!);
 
 const twilioClient = twilio(process.env.TWILIO_SID, process.env.TWILIO_TOKEN);
 
-declare module "iron-session"{
-  interface IronSessionData{
-    user?: {
-      id:number;
-    }
-  }
-}
-
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  const {token} = req.body;
-  const exists = await client.token.findUnique({
-    where:{
+  const { token } = req.body;
+  const foundToken = await client.token.findUnique({
+    where: {
       uniqueKey: token,
     },
   });
@@ -31,16 +23,18 @@ async function handler(
   console.log(req.session);
   console.log("Confrim파일_Token");
   console.log(token);
-  if(!exists) return res.status(404).end();
-  console.log(exists);
+  if (!foundToken) return res.status(404).end();
+  console.log(foundToken);
   req.session.user = {
-    id: exists.userId
-  }
+    id: foundToken.userId,
+  };
   await req.session.save();
-  res.status(200).end();
+  await client.token.deleteMany({
+    where:{
+      userId: foundToken.userId,
+    }
+  })
+  res.json({ok:true});
 }
 
-export default withIronSessionApiRoute(withHandler("POST", handler),{
-    cookieName: "ironTest",
-    password: "1234556766572askgsj1251251255125421dlhkgjeoigsakjjs"
-});
+export default withApiSession(withHandler("POST", handler));
