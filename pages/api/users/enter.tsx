@@ -16,22 +16,6 @@ async function handler(
   const uniqueKey = Math.floor(100000 + Math.random() * 900000) + "";
   const user = phone ? { phone: +phone } : email ? { email } : null;
   if (!user) return res.status(400).json({ ok: false });
-  const token = await client.token.create({
-    data: {
-      uniqueKey: uniqueKey,
-      user: {
-        connectOrCreate: {
-          where: {
-            ...user,
-          },
-          create: {
-            name: "Tester-Token",
-            ...user,
-          },
-        },
-      },
-    },
-  });
   if (phone) {
 /*     const message = await twilioClient.messages.create({
       messagingServiceSid: process.env.TWILIO_SERVICE,
@@ -55,4 +39,4 @@ async function handler(
   });
 }
 
-export default withHandler("POST", handler);
+export default withHandler({method:"POST", handler, isPrivate: false});
